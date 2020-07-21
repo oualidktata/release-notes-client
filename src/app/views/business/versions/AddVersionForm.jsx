@@ -62,7 +62,7 @@ const AddVersionForm = ({initial,onSubmitHandler}) => (
         <Paper >
         <form className={classes.root} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item lg={6} md={6} sm={12} xs={12} spacing="6">
+            <Grid item lg={6} md={6} sm={12} xs={12}>
                 <TextField
                   type="text"
                   name="major"
@@ -91,7 +91,7 @@ const AddVersionForm = ({initial,onSubmitHandler}) => (
                 />
                 {errors.patch && touched.patch && errors.patch}
             </Grid>
-            
+
             <Grid item lg={6} md={6} sm={12} xs={12}>
             <TextField
                   type="text"
