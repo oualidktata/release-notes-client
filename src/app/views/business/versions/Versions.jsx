@@ -110,7 +110,7 @@ const Versions = () => {
     return <p>Error APP Selector: {ApplicationQueryResponse.error.message}</p>;
 
   const initialValues = {
-    major: "0",
+    major: "22",
     minor: "0",
     patch: "0",
     env: "dev",
@@ -135,7 +135,6 @@ const Versions = () => {
         <Grid container direction="row" spacing={4}>
           <Grid
             item
-            
             lg={8}
             md={8}
             sm={12}
@@ -178,7 +177,7 @@ const Versions = () => {
             <Grid item lg={12} md={12} sm={12} xs={12}>
             <ShowRawData
               content={AddedVersionLog}
-              title="Debug Data..."
+              title="For debuging purposes only..."
             />
           </Grid>
           </Grid>
