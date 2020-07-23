@@ -7,6 +7,10 @@ const VERSIONS = gql`
       minor
       patch
       description
+      application{
+        id
+        name
+      }
     }
   }
 `;

@@ -2,75 +2,62 @@ import React, { useState, useEffect } from "react";
 import { Breadcrumb } from "matx";
 import {
   Grid,
-  Paper,
-  Button,
-  TextField,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-  Card,
-  makeStyles,
+  LinearProgress
 } from "@material-ui/core";
 import { useQuery, useMutation } from "@apollo/client";
 import AddVersionForm from "./AddVersionForm";
 import VersionList from "./VersionList";
 import ApplicationSelector from "../selectors/ApplicationSelector";
-import { ADD_VERSION, VERSIONS, APPLICATIONS } from "./GqlQueriesAndMutations";
-import ShowRawData from './ShowRawData';
+import { ADD_VERSION, APPLICATIONS } from "./GqlQueriesAndMutations";
+import ShowRawData from "./ShowRawData";
 
-
-const useStyles = makeStyles((theme) => ({
-  button: {
-    margin: theme.spacing(1),
-  },
-  input: {
-    display: "none",
-  },
-  title: {
-    fontSize: 14,
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     flexGrow: 1,
+//   },
+//   // button: {
+//   //   margin: theme.spacing(1),
+//   // },
+//   // paper: {
+//   //   padding: theme.spacing(1),
+//   //   textAlign: "center",
+//   //   color: theme.palette.text.secondary,
+//   // },
+//   input: {
+//     display: "none",
+//   },
+//   title: {
+//     fontSize: 14,
+//   },
+// }));
 const Versions = () => {
-  const classes = useStyles();
-  const defaultApp = "app-1";
-  const initialApps = [{ id: "app-1", name: "AGATE" }];
-  const [selectedApps, setSelectedApps] = useState([]);
+  //const classes = useStyles();
+  const defaultApp = "app-3";
+  const initialApps = ["app-1", "app-2"];
+  const [selectedApps, setSelectedApps] = useState(initialApps);
   const [counters, setCounters] = useState({ versionsCount: 0, appsCount: 0 });
   const [selectedTenant, setSelectedTenant] = useState("Dev");
-  const [isVersionUpserted, setVersionUpserted] = useState(false);
-  const [AddedVersionLog,setAddedVersionLog]=useState('')
-  
+  const [AddedVersionLog, setAddedVersionLog] = useState("");
   //#region GRAPHQL QUERIES AND MUTATIONS
-  const { loading, error, data, refetch: refetchVersions } = useQuery(
-    VERSIONS,
-    {
-      variables: { appIds: selectedApps },
-      skip: !selectedApps && selectedApps.length,
-    }
-  );
-
   const ApplicationQueryResponse = useQuery(APPLICATIONS, {
     variables: { tenantId: selectedTenant },
     //skip: !selectedTenant,
   });
-
-  const [addVersion] = useMutation(ADD_VERSION);
+  const [addVersion] = useMutation(ADD_VERSION, {
+    refetchQueries: ["versionsByApp"],
+  });
   //#endregion
 
   //#region EFFECTS
   useEffect(() => {
     console.log(`Use Effect ${JSON.stringify(selectedApps)}`);
-    console.log(`Use Effect ${JSON.stringify(data)}`);
-    // if(data){
-    //   setVersions(data.versionsByApp);
-    var updatedCounters = { ...counters };
-    updatedCounters.appsCount = selectedApps.length;
-    setCounters(updatedCounters);
-    refetchVersions();
-    // }
-  }, [selectedApps, isVersionUpserted, data, refetchVersions]);
+  }, [selectedApps]);
   //#endregion
-
+  const updateCounters = (count) => {
+    let newCounters = { ...counters };
+    newCounters.versionsCount = count;
+    setCounters(newCounters);
+  };
   const AddVersionHandler = (values) => {
     console.log(JSON.stringify(values));
     addVersion({
@@ -87,8 +74,7 @@ const Versions = () => {
         console.log(
           `data ADDVERSION ${JSON.stringify(data.addVersion.application.id)}`
         );
-
-        setAddedVersionLog(data.addVersion)
+        setAddedVersionLog(data.addVersion);
         if (
           data &&
           data.addVersion.application &&
@@ -98,8 +84,7 @@ const Versions = () => {
           console.log(
             `data ADDVERSION INSIDE ${data.addVersion.application.id}`
           );
-
-          refetchVersions();
+          //setIsRefresh(true);
         }
       })
       .catch((error) => {
@@ -108,38 +93,29 @@ const Versions = () => {
   };
 
   const onAppSelectedHandler = (event, value) => {
+    //console.log(`onAppSelectedHandler:Event: ${JSON.stringify(event)}`);
     console.log(`onAppSelectedHandler:Value: ${JSON.stringify(value)}`);
+    console.log(
+      `onAppSelectedHandler:SlectedApps: ${JSON.stringify(selectedApps)}`
+    );
+    //let apps=
     setSelectedApps(value.map((x) => x.id));
   };
+
   console.log(`${selectedTenant}-${selectedApps}`);
   // if(selectedApps) return <p> {selectedApps}</p>;
-  if (loading) return <p>Loading...</p>;
 
-  if (error) return <p>Error: {error.message}</p>;
-  if (ApplicationQueryResponse.loading) return <p>Loading App Selector...</p>;
-  if (ApplicationQueryResponse.error) return <p>Error APP Selector: {ApplicationQueryResponse.error.message}</p>;
-  // if (data.versionsByApp) {
-    
-  //   var array=data.versionsByApp.slice().sort((a,b)=>{
-  //   var aMajor=a.major;
-  //   var bMajor=b.major;
-  //   if(aMajor>bMajor) return 1;
-  //   if(aMajor<bMajor) return -1;
-  //   return 0;
+  if (ApplicationQueryResponse.loading) return <LinearProgress />;
+  if (ApplicationQueryResponse.error)
+    return <p>Error APP Selector: {ApplicationQueryResponse.error.message}</p>;
 
-  // });
-  // versionsRecords=array
-  // return <p>data</p>
-  // }
-   
-  // if (selectedApps) return <p>data: {JSON.stringify(data)}</p>
   const initialValues = {
     major: "0",
     minor: "0",
     patch: "0",
     env: "dev",
     description: "description",
-    appId: "app-1", //ApplicationQueryResponse.data.applicationsByTenant.filter(x=>x.id==='app-1')[0].id,
+    appId: defaultApp, //ApplicationQueryResponse.data.applicationsByTenant.filter(x=>x.id==='app-1')[0].id,
     apps: ApplicationQueryResponse.data.applicationsByTenant,
   };
   return (
@@ -156,41 +132,55 @@ const Versions = () => {
       </div>
 
       <div className="m-sm-30">
-        <Grid container>
-          <Grid item lg={9} md={9} sm={12} xs={12}>
-            <AddVersionForm
-              initial={initialValues}
-              onSubmitHandler={AddVersionHandler}
-            ></AddVersionForm>
+        <Grid container direction="row" spacing={4}>
+          <Grid
+            item
+            
+            lg={8}
+            md={8}
+            sm={12}
+            xs={12}
+          >
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <ApplicationSelector
+                items={ApplicationQueryResponse.data.applicationsByTenant}
+                defaultValues={
+                  selectedApps
+                    ? ApplicationQueryResponse.data.applicationsByTenant.filter(
+                        (x) => selectedApps.includes(x.id)
+                      )
+                    : ApplicationQueryResponse.data.applicationsByTenant.filter(
+                        (x) => x.id === defaultApp
+                      )
+                }
+                onItemSelected={onAppSelectedHandler}
+              />
+            </Grid>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              {selectedApps && (
+                <VersionList
+                  selectedApps={selectedApps}
+                  updateCounters={updateCounters}
+                ></VersionList>
+              )}
+            </Grid>
           </Grid>
-          <div>{isVersionUpserted && <p>{isVersionUpserted}</p>}</div>
-          <Grid item lg={3} md={3} sm={12} xs={12}>
-            <Paper>
-                   <ShowRawData content={AddedVersionLog} title="AddVersion FeedBack..."></ShowRawData>
-            </Paper>
-         </Grid>
-         
-        </Grid>
-        <Grid>
-          <Grid item lg={6} md={6} sm={12} xs={12}>
-            <ApplicationSelector
-              items={ApplicationQueryResponse.data.applicationsByTenant}
-              defaultValues={
-                selectedApps
-                  ? ApplicationQueryResponse.data.applicationsByTenant.filter(
-                      (x) => selectedApps.includes(x.id)
-                    )
-                  : ApplicationQueryResponse.data.applicationsByTenant.filter(
-                      (x) => x.id === defaultApp
-                    )
-              }
-              onItemSelected={onAppSelectedHandler}
+          <Grid item lg={4} md={4} sm={12} xs={12}>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <h2>Current Versions: {counters.versionsCount}</h2>
+            </Grid>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+              <AddVersionForm
+                initial={initialValues}
+                onSubmitHandler={AddVersionHandler}
+              />
+            </Grid>
+            <Grid item lg={12} md={12} sm={12} xs={12}>
+            <ShowRawData
+              content={AddedVersionLog}
+              title="Debug Data..."
             />
           </Grid>
-          <Grid item lg={12} md={12} sm={12} xs={12}>
-            {selectedApps && (
-              <VersionList versions={data.versionsByApp}></VersionList>
-            )}
           </Grid>
         </Grid>
       </div>

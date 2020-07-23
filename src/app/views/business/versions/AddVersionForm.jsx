@@ -25,15 +25,11 @@ const classes = makeStyles((theme) => ({
     },
   },
 }));
-const OnRateSelectedHandler=(e)=>{
-  console.log(e)
-}
 
 const AddVersionForm = ({initial,onSubmitHandler}) => (
   <div>
     <Formik
       initialValues={initial}
-      //initialValues={{ major: "", minor: "", env: "dev", patch:"",description: "" }}
       validate={(values) => {
         const errors = {};
         if (!values.major) {
@@ -58,8 +54,6 @@ const AddVersionForm = ({initial,onSubmitHandler}) => (
         isSubmitting,
         /* and other goodies */
       }) => (
-
-        <Paper >
         <form className={classes.root} onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item lg={6} md={6} sm={12} xs={12}>
@@ -135,9 +129,6 @@ const AddVersionForm = ({initial,onSubmitHandler}) => (
                 />
               </RadioGroup>
             </Grid> 
-                {/* <Grid item lg={3} md={3} sm={12} xs={12}>
-              <RateSelector onRateSelected={OnRateSelectedHandler} ></RateSelector>
-            </Grid> */}
           </Grid>
           <Button
             variant="outlined"
@@ -149,7 +140,6 @@ const AddVersionForm = ({initial,onSubmitHandler}) => (
             <span className="pl-8 capitalize">Save</span>
           </Button>
         </form>
-        </Paper>
       )}
     </Formik>
   </div>

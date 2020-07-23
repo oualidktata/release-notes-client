@@ -21,7 +21,7 @@ const Footer = ({ theme, settings }) => {
       <div className="footer flex flex-middle">
         <div className="flex flex-middle container px-sm-30 w-100">
           <a href="https://ui-lib.com/downloads/matx-react-material-design-admin-template/" className="mr-8">
-            <Button variant="contained" color="error">
+            <Button variant="contained" color="default">
               Download Matx
             </Button>
           </a>
