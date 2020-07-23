@@ -110,7 +110,11 @@ const Versions = () => {
     return <p>Error APP Selector: {ApplicationQueryResponse.error.message}</p>;
 
   const initialValues = {
+<<<<<<< HEAD
     major: "22",
+=======
+    major: "0",
+>>>>>>> b9e112b... added details and edit version dialogs
     minor: "0",
     patch: "0",
     env: "dev",
@@ -135,6 +139,7 @@ const Versions = () => {
         <Grid container direction="row" spacing={4}>
           <Grid
             item
+            
             lg={8}
             md={8}
             sm={12}
@@ -166,7 +171,7 @@ const Versions = () => {
           </Grid>
           <Grid item lg={4} md={4} sm={12} xs={12}>
             <Grid item lg={12} md={12} sm={12} xs={12}>
-              <h2>Current Versions: {counters.versionsCount}</h2>
+              <h2>Count: {counters.versionsCount}</h2>
             </Grid>
             <Grid item lg={12} md={12} sm={12} xs={12}>
               <AddVersionForm
@@ -177,7 +182,7 @@ const Versions = () => {
             <Grid item lg={12} md={12} sm={12} xs={12}>
             <ShowRawData
               content={AddedVersionLog}
-              title="For debuging purposes only..."
+              title="Debug Data..."
             />
           </Grid>
           </Grid>

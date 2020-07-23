@@ -8,11 +8,13 @@ import {
   TableCell,
   Fab,
   Icon,
-  LinearProgress
+  IconButton,
+  LinearProgress,
 } from "@material-ui/core";
 import { VERSIONS } from "./GqlQueriesAndMutations";
 import { useQuery, NetworkStatus } from "@apollo/client";
-import EditVersion from "./EditVersion";
+import EditDetailsDialog from "./EditDetailsDialog";
+import EditVersionDialog from "./EditVersionDialog";
 // import { Grid, GridColumn, GridSelectionChangeEvent, GridRowClickEvent } from '@progress/kendo-react-grid';
 
 const useStyles = makeStyles((theme) => ({
@@ -36,20 +38,30 @@ const useStyles = makeStyles((theme) => ({
 const VersionList = ({ selectedApps, updateCounters }) => {
   const classes = useStyles();
 
+  const [openEditVersionDialog, setOpenEditVersionDialog] = useState(false);
+  const [openEditDetailsDialog, setOpenEditDetailsDialog] = useState(false);
 
+  const handleOpenEditVersionDialog = (id) => {
+    setSelectedVersion(id);
+    setOpenEditVersionDialog(true);
+  };
+  const handleOpenEditDetailsDialog = () => {
+    setOpenEditDetailsDialog(true);
+  };
 
-  const [open, setOpen] = useState(false);
+  const handleCloseEditVersionDialog = () => {
+    setOpenEditVersionDialog(false);
+  };
 
-  function handleClickOpen() {
-    setOpen(true);
-  }
+  const handleCloseEditDetailsDialog = () => {
+    setOpenEditDetailsDialog(false);
+  };
+  const handleUpdateVersionHandler = (event) => {
+    console.log(`Version LIST: handleUpdateVersionHandler${event}`);
+  };
 
-  function handleClose() {
-    setOpen(false);
-  }
-  
-  const [selectedVersion,setSelectedVersion]=useState()
-  
+  const [selectedVersion, setSelectedVersion] = useState();
+
   const { loading, error, data, networkStatus } = useQuery(VERSIONS, {
     variables: { appIds: selectedApps },
     skip: !selectedApps && selectedApps.length,
@@ -76,7 +88,7 @@ const VersionList = ({ selectedApps, updateCounters }) => {
     return (
       <>
         <div className="w-100 overflow-auto">
-          <Table style={{ whiteSpace: "pre" }}className="product-table">
+          <Table style={{ whiteSpace: "pre" }} className="product-table">
             <TableHead>
               <TableRow>
                 <TableCell className="px-0">#</TableCell>
@@ -85,7 +97,9 @@ const VersionList = ({ selectedApps, updateCounters }) => {
                 <TableCell className="px-0">Minor</TableCell>
                 <TableCell className="px-0">Patch</TableCell>
                 <TableCell className="px-0">Description</TableCell>
-                <TableCell className="px-0" align="center">Actions</TableCell>
+                <TableCell className="px-0" align="center">
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -96,7 +110,7 @@ const VersionList = ({ selectedApps, updateCounters }) => {
                 ) => (
                   <TableRow key={id}>
                     <TableCell className="px-0 capitalize" align="left">
-                      {index+1}
+                      {index + 1}
                     </TableCell>
                     <TableCell className="px-0 capitalize" align="left">
                       {application.name}
@@ -113,24 +127,35 @@ const VersionList = ({ selectedApps, updateCounters }) => {
                     <TableCell className="px-0 capitalize" align="left">
                       {description}
                     </TableCell>
-                    <TableCell className="px-0">
-                      <Fab
-                        size="small"
-                        color="secondary"
-                        aria-label="Edit"
-                        className={classes.button}
-                        onClick={handleClickOpen}
-                      >
-                        <Icon>edit_icon</Icon>
-                      </Fab>
-                      <Fab
-                        size="small"
-                        aria-label="Delete"
-                        className={classes.button}
-                      >
-                        <Icon>delete</Icon>
-                      </Fab>
+                    <TableCell className="px-0 flex flex-middle condensed">
+                        <IconButton
+                          size="small"
+                          aria-label="list"
+                          className={classes.button}
+                          color="primary"
+                          onClick={() => handleOpenEditVersionDialog(id)}
+                        >
+                          <Icon>edit</Icon>
+                        </IconButton>
 
+                        <IconButton
+                          size="small"
+                          className={classes.button}
+                          aria-label="list"
+                          color="primary"
+                          onClick={handleOpenEditDetailsDialog}
+                        >
+                          <Icon>list</Icon>
+                        </IconButton>
+                        <IconButton
+                          size="small"
+                          className={classes.button}
+                          aria-label="Delete"
+                          color="danger"
+                          //onClick={handleOpenEditDetailsDialog}
+                        >
+                          <Icon>delete</Icon>
+                        </IconButton>
                     </TableCell>
                   </TableRow>
                 )
@@ -138,7 +163,17 @@ const VersionList = ({ selectedApps, updateCounters }) => {
             </TableBody>
           </Table>
         </div>
-        <EditVersion isOpen={open} onCloseHandler={handleClose} versionToEdit={selectedVersion} />
+        <EditVersionDialog
+          isOpen={openEditVersionDialog}
+          onCloseHandler={handleCloseEditVersionDialog}
+          versionToEdit={selectedVersion}
+          onUpdateHandler={handleUpdateVersionHandler}
+        />
+        <EditDetailsDialog
+          isOpen={openEditDetailsDialog}
+          onCloseHandler={handleCloseEditDetailsDialog}
+          versionToEdit={selectedVersion}
+        />
       </>
     );
   }
