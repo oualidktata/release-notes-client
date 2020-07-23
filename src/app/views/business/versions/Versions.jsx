@@ -110,11 +110,7 @@ const Versions = () => {
     return <p>Error APP Selector: {ApplicationQueryResponse.error.message}</p>;
 
   const initialValues = {
-<<<<<<< HEAD
     major: "22",
-=======
-    major: "0",
->>>>>>> b9e112b... added details and edit version dialogs
     minor: "0",
     patch: "0",
     env: "dev",
