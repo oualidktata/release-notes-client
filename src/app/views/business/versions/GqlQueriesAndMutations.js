@@ -15,6 +15,21 @@ const VERSIONS = gql`
   }
 `;
 
+const GET_VERSION_BY_ID=gql` 
+query versionById($id:ID!){
+  versionById(id:$id){
+    id
+    major
+    minor
+    patch
+    description
+    application{
+      id
+      name
+    }
+  }
+}`;
+
 const ADD_VERSION = gql`
   mutation addVersion($major: String!, $minor: String!, $patch: String!,$appId:ID!,$description:String!) {
     addVersion(major: $major, minor: $minor, patch: $patch,description:$description,appId:$appId) {
@@ -30,8 +45,10 @@ const ADD_VERSION = gql`
   }
 `;
 
+
+
 const APPLICATIONS = gql`
-  query APPLICATIONS($tenantId: ID!) {
+  query applications($tenantId: ID!) {
     applicationsByTenant(tenantId: $tenantId) {
       id
       name
@@ -44,7 +61,8 @@ const APPLICATIONS = gql`
 `;
 
 export {
-  ADD_VERSION,
   VERSIONS,
-  APPLICATIONS
+  GET_VERSION_BY_ID,
+  APPLICATIONS,
+  ADD_VERSION,
 };

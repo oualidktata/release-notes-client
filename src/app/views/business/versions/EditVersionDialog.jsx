@@ -1,5 +1,5 @@
 import React from 'react'
-import AddVersionForm from './AddVersionForm'
+import UpdateVersionForm from './UpdateVersionForm'
 import {
     Dialog,
     DialogTitle,
@@ -7,31 +7,24 @@ import {
     DialogContentText,
     DialogActions,
     Button,
+    Badge
   } from "@material-ui/core";
-const EditVersionDialog=({isOpen,onCloseHandler,versionToEdit,onUpdateHandler}) =>{
-    console.log(`OPEN ${JSON.stringify(isOpen)}`)
-    const initialValues = {
-      major: "55",
-      minor: "0",
-      patch: "0",
-      env: "dev",
-      description: "description",
-      appId: "app-3", //ApplicationQueryResponse.data.applicationsByTenant.filter(x=>x.id==='app-1')[0].id,
-      apps: ["app-1","app-2","app-3"],
-    };
+  const EditVersionDialog=({isOpen,onCloseHandler,versionId,onUpdateHandler}) =>{
+    console.log(`EditVersionDialog-IsOpen ${JSON.stringify(isOpen)}`)
+
     return (
         <Dialog
         open={isOpen}
         onClose={onCloseHandler}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Edit Info</DialogTitle>
+        <DialogTitle id="form-dialog-title">Edit Info -id:{versionId} </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Edit version data
+            Use this form to edit a version basic information
           </DialogContentText>
-         <AddVersionForm
-                initial={initialValues}
+         <UpdateVersionForm
+                versionId={versionId}
                 onSubmitHandler={onUpdateHandler}
               />
         </DialogContent>
@@ -40,7 +33,7 @@ const EditVersionDialog=({isOpen,onCloseHandler,versionToEdit,onUpdateHandler}) 
             Cancel
           </Button>
           <Button onClick={onCloseHandler} color="primary">
-            save
+            Ok
           </Button>
         </DialogActions>
       </Dialog>

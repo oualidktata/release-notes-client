@@ -151,7 +151,7 @@ const VersionList = ({ selectedApps, updateCounters }) => {
                           size="small"
                           className={classes.button}
                           aria-label="Delete"
-                          color="danger"
+                          color="primary"
                           //onClick={handleOpenEditDetailsDialog}
                         >
                           <Icon>delete</Icon>
@@ -166,13 +166,13 @@ const VersionList = ({ selectedApps, updateCounters }) => {
         <EditVersionDialog
           isOpen={openEditVersionDialog}
           onCloseHandler={handleCloseEditVersionDialog}
-          versionToEdit={selectedVersion}
+          versionId={selectedVersion}
           onUpdateHandler={handleUpdateVersionHandler}
         />
         <EditDetailsDialog
           isOpen={openEditDetailsDialog}
           onCloseHandler={handleCloseEditDetailsDialog}
-          versionToEdit={selectedVersion}
+          versionId={selectedVersion}
         />
       </>
     );
