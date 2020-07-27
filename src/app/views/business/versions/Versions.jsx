@@ -36,7 +36,7 @@ const Versions = () => {
   const initialApps = ["app-1", "app-2"];
   const [selectedApps, setSelectedApps] = useState(initialApps);
   const [counters, setCounters] = useState({ versionsCount: 0, appsCount: 0 });
-  const [selectedTenant, setSelectedTenant] = useState("Dev");
+  const [selectedTenant, setSelectedTenant] = useState("1");
   const [AddedVersionLog, setAddedVersionLog] = useState("");
   //#region GRAPHQL QUERIES AND MUTATIONS
   const ApplicationQueryResponse = useQuery(APPLICATIONS, {
@@ -72,17 +72,17 @@ const Versions = () => {
       .then(({ data }) => {
         console.log(`Recieved DATA After ADDVERSION${JSON.stringify(data)}`);
         console.log(
-          `data ADDVERSION ${JSON.stringify(data.addVersion.application.id)}`
+          `data ADDVERSION ${JSON.stringify(data.addVersion.appId)}`
         );
         setAddedVersionLog(data.addVersion);
         if (
           data &&
           data.addVersion.application &&
           data.addVersion.application.id &&
-          selectedApps.includes(data.addVersion.application.id)
+          selectedApps.includes(data.addVersion.appId)
         ) {
           console.log(
-            `data ADDVERSION INSIDE ${data.addVersion.application.id}`
+            `data ADDVERSION INSIDE ${data.addVersion.appId}`
           );
           //setIsRefresh(true);
         }
@@ -114,7 +114,7 @@ const Versions = () => {
     minor: "0",
     patch: "0",
     env: "dev",
-    description: "description",
+    description: `${defaultApp}-From Web UI`,
     appId: defaultApp, //ApplicationQueryResponse.data.applicationsByTenant.filter(x=>x.id==='app-1')[0].id,
     apps: ApplicationQueryResponse.data.applicationsByTenant,
   };
