@@ -6,7 +6,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Fab,
   Icon,
   IconButton,
   LinearProgress,
@@ -45,7 +44,8 @@ const VersionList = ({ selectedApps, updateCounters }) => {
     setSelectedVersion(id);
     setOpenEditVersionDialog(true);
   };
-  const handleOpenEditDetailsDialog = () => {
+  const handleOpenEditDetailsDialog = (id) => {
+    setSelectedVersion(id);
     setOpenEditDetailsDialog(true);
   };
 
@@ -71,12 +71,9 @@ const VersionList = ({ selectedApps, updateCounters }) => {
 
   useEffect(() => {
     if (data) {
-      console.log("USE EFFECT VERSION LIST");
-      console.log(JSON.stringify(data.versionsByApp.length));
-      console.log(selectedApps);
       updateCounters(data.versionsByApp.length);
     }
-  }, [data]);
+  }, [data]);//no updateCounters, this will render infinite loop
 
   if (error) return <p>Error: {error.message}</p>;
   if (!data && loading) return <LinearProgress color="secondary" />;
@@ -143,7 +140,7 @@ const VersionList = ({ selectedApps, updateCounters }) => {
                           className={classes.button}
                           aria-label="list"
                           color="primary"
-                          onClick={handleOpenEditDetailsDialog}
+                          onClick={()=>handleOpenEditDetailsDialog(id)}
                         >
                           <Icon>list</Icon>
                         </IconButton>
@@ -172,7 +169,7 @@ const VersionList = ({ selectedApps, updateCounters }) => {
         <EditDetailsDialog
           isOpen={openEditDetailsDialog}
           onCloseHandler={handleCloseEditDetailsDialog}
-          versionId={selectedVersion}
+           versionId={selectedVersion}
         />
       </>
     );

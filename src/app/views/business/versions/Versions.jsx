@@ -143,13 +143,13 @@ const Versions = () => {
           >
             <Grid item lg={12} md={12} sm={12} xs={12}>
               <ApplicationSelector
-                items={ApplicationQueryResponse.data.applicationsByTenant}
+                items={ApplicationQueryResponse.data.applications}
                 defaultValues={
                   selectedApps
-                    ? ApplicationQueryResponse.data.applicationsByTenant.filter(
+                    ? ApplicationQueryResponse.data.applications.filter(
                         (x) => selectedApps.includes(x.id)
                       )
-                    : ApplicationQueryResponse.data.applicationsByTenant.filter(
+                    : ApplicationQueryResponse.data.applications.filter(
                         (x) => x.id === defaultApp
                       )
                 }

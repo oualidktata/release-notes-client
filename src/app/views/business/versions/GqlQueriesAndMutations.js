@@ -15,6 +15,22 @@ const VERSIONS = gql`
   }
 `;
 
+const VERSIONDETAILS_BY_VERSION_ID=gql`
+query versionDetailsByVersionId($versionId:ID!){
+  versionDetailsByVersionId(versionId:$versionId)
+  {
+    id
+    shortDescription
+    longDescription
+    status{
+      code
+    }
+    changeType{
+      name
+    }
+  }
+}
+`;
 const GET_VERSION_BY_ID=gql` 
 query versionById($id:ID!){
   versionById(id:$id){
@@ -45,11 +61,9 @@ const ADD_VERSION = gql`
   }
 `;
 
-
-
 const APPLICATIONS = gql`
   query applications($tenantId: ID!) {
-    applicationsByTenant(tenantId: $tenantId) {
+    applications(tenantId: $tenantId) {
       id
       name
       tenant{
@@ -65,4 +79,5 @@ export {
   GET_VERSION_BY_ID,
   APPLICATIONS,
   ADD_VERSION,
+  VERSIONDETAILS_BY_VERSION_ID
 };

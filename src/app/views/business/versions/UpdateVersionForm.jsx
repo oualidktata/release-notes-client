@@ -22,30 +22,22 @@ import DateFnsUtils from "@date-io/date-fns";
 
 import { GET_VERSION_BY_ID, ADD_VERSION, APPLICATIONS } from "./GqlQueriesAndMutations";
 import { dateFnsLocalizer } from "react-big-calendar";
+import AppSelect from '../selectors/AppSelect';
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
 
-const UpdateVersionForm = (props) => {
-  const classes = useStyles();
+
+const UpdateVersionForm = ({versionId}) => {
   const [state, setState] = useState({
     major: 0,
     minor: 0,
     patch: 0,
     appId: "app-1",
     description: "desc",
-    date: "",
+    date: Date(),
   });
 
 
-  const [apps,setApps]=useState([])
+  //const [apps,setApps]=useState([])
   // const [addVersion] = useMutation(ADD_VERSION);
 
   // useEffect(() => {
@@ -130,12 +122,16 @@ const UpdateVersionForm = (props) => {
   // }=state;
 
   const { loading, error, data } = useQuery(GET_VERSION_BY_ID, {
-    variables: { id: props.versionId },
+    variables: { id: versionId },
   });
-  const { loadingApps, errorApps, dataApps } = useQuery(APPLICATIONS, {
-    variables: { tenantId: 1 },
-    //skip: !selectedTenant,
-  });
+  
+const onAppSelectedHandler=(event)=>{
+  let newState = { ...state };
+  newState["appId"] = event.target.value;
+  setState(newState);
+console.log(`onAppSelectedHandler : ${event.target.value}`);
+}
+
 
   useEffect(() => {
     if (!loading && data) {
@@ -143,22 +139,31 @@ const UpdateVersionForm = (props) => {
       console.log(
         `UPDATE Version FORM :data ${JSON.stringify(data.versionById)}`
       );
-      setState({ ...newData });
+
+
+      setState({  major: newData.major,
+        minor: newData.minor,
+        patch: newData.patch,
+        appId: newData.application.id,
+        description: newData.description,
+        date: Date() });
     }
   }, [loading, data]);
 
 
-  useEffect(() => {
-    console.log(`Apps ${apps}`)
-    if (!loadingApps && dataApps) {
-      console.log(`Apps ${apps}`)
-      setApps(dataApps.applications);
-    }
-  }, [dataApps]);
+  // useEffect(() => {
+  //   console.log(`Apps ${apps}`)
+  //   if (!loadingApps && dataApps) {
+  //     console.log(`Apps ${apps}`)
+  //     setApps(dataApps.applications);
+  //   }
+  // }, [dataApps]);
 
   if (loading) return <LinearProgress />;
   if (error) return <p>ERROR Update Version:{error.message}</p>;
   return (
+    <>
+    <p>{JSON.stringify(state)}</p>
     <div>
       <ValidatorForm
         //ref="form"
@@ -179,7 +184,7 @@ const UpdateVersionForm = (props) => {
                 "minStringLength: 1",
                 "maxStringLength: 3",
               ]}
-              errorMessages={["this field is required"]}
+              errormessages={["this field is required"]}
             />
             <TextValidator
               className="mb-32 w-100"
@@ -193,7 +198,7 @@ const UpdateVersionForm = (props) => {
                 "minStringLength:1",
                 "maxStringLength: 3",
               ]}
-              errorMessages={["this field is required"]}
+              errormessages={["this field is required"]}
             />
             <TextValidator
               className="mb-32 w-100"
@@ -207,24 +212,12 @@ const UpdateVersionForm = (props) => {
                 "minStringLength:1",
                 "maxStringLength: 3",
               ]}
-              errorMessages={["this field is required"]}
+              errormessages={["this field is required"]}
             />
           </Grid>
 
           <Grid item lg={6} md={6} sm={12} xs={12}>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="demo-simple-select-label">Application</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={state.appId}
-                onChange={handleChange}
-              >
-                <MenuItem value={"app-1"}>AGATE</MenuItem>
-                <MenuItem value={"app-2"}>ADP</MenuItem>
-                <MenuItem value={"app-3"}>Facturation</MenuItem>
-              </Select>
-            </FormControl>
+            <AppSelect defaultValue={state.appId} onItemSelected={onAppSelectedHandler}/>
 
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <KeyboardDatePicker
@@ -235,7 +228,7 @@ const UpdateVersionForm = (props) => {
                 inputVariant="standard"
                 type="text"
                 autoOk={true}
-                value={state.date}
+                value={state.date || ''}
                 onChange={handleDateChange}
                 KeyboardButtonProps={{
                   "aria-label": "change date",
@@ -258,7 +251,7 @@ const UpdateVersionForm = (props) => {
                 "minStringLength:1",
                 "maxStringLength: 255",
               ]}
-              errorMessages={["this field is required"]}
+              errormessages={["this field is required"]}
             />
           </Grid>
           {/* <Grid item lg={12} md={12} sm={12} xs={12}>
@@ -271,7 +264,9 @@ const UpdateVersionForm = (props) => {
         </Button>
       </ValidatorForm>
     </div>
+    </>
   );
+
 };
 
 export default UpdateVersionForm;

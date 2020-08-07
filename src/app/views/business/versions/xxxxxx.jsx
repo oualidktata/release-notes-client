@@ -27,7 +27,7 @@ const AddRateForm = () => (
   
   <div>
     
-    <h1>Add a Release</h1>
+    <h1>Add a version detail item </h1>
     <Formik
       initialValues={{ major: "", minor: "", env: "dev", patch:"",description: "" }}
       validate={(values) => {

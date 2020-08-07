@@ -1,5 +1,7 @@
 import React from 'react'
 import AddDetailForm from './AddDetailForm'
+import VersionDetailList from './VersionDetailList'
+
 import {
     Dialog,
     DialogTitle,
@@ -7,10 +9,18 @@ import {
     DialogContentText,
     DialogActions,
     Button,
-    TextField
   } from "@material-ui/core";
-const EditDetailsDialog=({isOpen,onCloseHandler,versionToEdit}) =>{
-    console.log(`OPEN ${JSON.stringify(isOpen)}`)
+
+
+const EditDetailsDialog=({isOpen,onCloseHandler,versionId}) =>{
+
+ 
+//const versionId="v1"
+
+
+// const [versionToEdit,setVersionToEdit]=useState(null);
+
+    console.log(`EditDialog VersionId ${JSON.stringify(versionId)}`)
     const initialValues = {
       major: "0",
       minor: "0",
@@ -29,9 +39,10 @@ const EditDetailsDialog=({isOpen,onCloseHandler,versionToEdit}) =>{
         <DialogTitle id="form-dialog-title">Edit details</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Add details for version:<h2>{initialValues.major}.{initialValues.minor}.{initialValues.patch}</h2>
+    Edit details for version: {initialValues.major}.{initialValues.minor}.{initialValues.patch}
           </DialogContentText>
-         <AddDetailForm/>
+         <AddDetailForm  versionId={versionId}/>
+         <VersionDetailList versionId={versionId}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={onCloseHandler} color="primary">
