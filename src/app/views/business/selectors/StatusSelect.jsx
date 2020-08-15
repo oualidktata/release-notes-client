@@ -1,13 +1,8 @@
-import React,{useState,useEffect} from 'react';
-import { Select, FormControl, InputLabel, LinearProgress } from '@material-ui/core';
+import React from 'react';
+import { Select,MenuItem, FormControl, InputLabel, LinearProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { APPLICATIONS } from "../versions/GqlQueriesAndMutations";
+import { STATUSES } from "../versions/GqlQueriesAndMutations";
 import { useQuery } from "@apollo/client";
-
-
-// const useStyles = makeStyles({
-//  
-// });
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -25,11 +20,9 @@ const useStyles = makeStyles((theme) => ({
   //     },
 }));
 
-const AppSelect = ({ defaultValue, onItemSelected }) => {
+const StatusSelect = ({id,name,defaultValue, onItemSelected }) => {
   const classes = useStyles();
-const [apps,setApps]=useState()
-const [value,setValue]=useState(defaultValue)
-  const { loading, error, data } = useQuery(APPLICATIONS, {
+  const { loading, error, data } = useQuery(STATUSES, {
     variables: { tenantId: 1 },
     //skip: !selectedTenant,
   });
@@ -41,29 +34,23 @@ const [value,setValue]=useState(defaultValue)
   //  }, [loading, data,defaultValue])
 
   if (loading) return <LinearProgress />;
-  if (error) {
-    return <p>Error APP Selector: {error.message}</p>;
-
-  }
+  if (error) return <p>Error Selector: {error.message}</p>;
    return (
       <>
         <FormControl className={classes.formControl}>
-        <InputLabel htmlFor="application">Application</InputLabel>
+        <InputLabel htmlFor="status">Status</InputLabel>
         <Select
-          native
           defaultValue={defaultValue || ''}
           onChange={onItemSelected}
-          inputProps={{
-            name: 'application',
-            id: 'application',
-          }}
+          id={id}
+          name={name}
         >
-          <option key={0} aria-label="None" value="" />
-        {data.applications.map(item => <option key={item.id} value={item.id}>{item.id}-{item.name}</option>
+        <MenuItem key={0} aria-label="None" value="" />
+        {data.statuses.map(item => <MenuItem key={item.id} value={item.id}>{item.code}</MenuItem>
           )}
         </Select>
       </FormControl>
       </>
     );
 }
-export default AppSelect
+export default StatusSelect

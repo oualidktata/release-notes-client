@@ -4,7 +4,7 @@ import {
   IconButton,
   Hidden
 } from "@material-ui/core";
-import { classList } from 'Utils';
+import { classList } from 'utils';
 
 class TopbarMenu extends Component {
   state = {

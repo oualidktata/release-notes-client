@@ -108,19 +108,8 @@ const UpdateVersionForm = ({versionId}) => {
   };
 
   // const [updateVersion] = useMutation(UPDATE_VERSION, {
-  //  // refetchQueries: ["versionsByApp"],
+  //  refetchQueries: ["versionsByApp"],
   // });
-
-  // let {
-  // major,
-  // minor,
-  // patch,
-  // description,
-  // appId,
-  // date,
-
-  // }=state;
-
   const { loading, error, data } = useQuery(GET_VERSION_BY_ID, {
     variables: { id: versionId },
   });

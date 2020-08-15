@@ -60,6 +60,25 @@ const ADD_VERSION = gql`
     }
   }
 `;
+const ADD_VERSION_DETAIL = gql`
+mutation addVersionDetail($input:VersionDetailInput){
+  addVersionDetail(input:$input)
+  {
+    id
+    status{
+      id
+    }
+    changeType{
+      id
+    }
+    isActive
+    links{
+        id
+        name
+    }
+  }
+}
+`;
 
 const APPLICATIONS = gql`
   query applications($tenantId: ID!) {
@@ -74,10 +93,46 @@ const APPLICATIONS = gql`
   }
 `;
 
+const STATUSES = gql`
+query statuses($tenantId:ID!) {
+  statuses(tenantId:$tenantId){
+    id
+    code
+    description
+    isActive
+  }
+}
+`;
+const CHANGE_TYPES = gql`
+query changeTypes($tenantId:ID!) {
+  changeTypes(tenantId:$tenantId){
+    id
+    name
+    description
+    isActive
+  }
+}
+`;
+const TARGET_SYSTEMS = gql`
+query targetSystems($tenantId:ID!) {
+  targetSystems(tenantId:$tenantId){
+    id
+    name
+    description
+    isActive
+  }
+}
+`;
+
 export {
   VERSIONS,
   GET_VERSION_BY_ID,
+  VERSIONDETAILS_BY_VERSION_ID,
+  
   APPLICATIONS,
+  STATUSES,
+  CHANGE_TYPES,
+  TARGET_SYSTEMS,
   ADD_VERSION,
-  VERSIONDETAILS_BY_VERSION_ID
+  ADD_VERSION_DETAIL,
 };

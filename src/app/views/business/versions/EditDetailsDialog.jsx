@@ -32,24 +32,23 @@ const EditDetailsDialog=({isOpen,onCloseHandler,versionId}) =>{
     };
     return (
         <Dialog
-        open={isOpen}
+        fullWidth={false}
+        maxWidth="lg"
+        open={isOpen} 
         onClose={onCloseHandler}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Edit details</DialogTitle>
         <DialogContent>
           <DialogContentText>
-    Edit details for version: {initialValues.major}.{initialValues.minor}.{initialValues.patch}
+        Edit details for version: {initialValues.major}.{initialValues.minor}.{initialValues.patch}
           </DialogContentText>
          <AddDetailForm  versionId={versionId}/>
          <VersionDetailList versionId={versionId}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={onCloseHandler} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={onCloseHandler} color="primary">
-            save
+            Close
           </Button>
         </DialogActions>
       </Dialog>
