@@ -1,6 +1,5 @@
 import React from "react";
-import { Formik } from "formik";
-import Paper from '@material-ui/core/Paper'
+import { Formik,Form } from "formik";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Grid,
@@ -11,7 +10,7 @@ import {
   RadioGroup,
   Radio
 } from "@material-ui/core";
-const classes = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
       margin: theme.spacing(1),
@@ -26,15 +25,25 @@ const classes = makeStyles((theme) => ({
   },
 }));
 
-const AddVersionForm = ({initial,onSubmitHandler}) => (
-  <div>
+type AddVersionFormModel={
+  major:String;
+  minor:String;
+  patch:String;
+  description:String;
+  env:string;
+
+}
+const AddVersionForm = ({initial,onSubmitHandler}) => {
+const classes=useStyles();
+  return (
+   <>
     <Formik
       initialValues={initial}
-      validate={(values) => {
-        const errors = {};
+      validate={(values:AddVersionFormModel) => {
+        const errors:Partial<AddVersionFormModel> = {};
         if (!values.major) {
           errors.major = "Required";
-        } else if (values.major > 100) {
+        } else if (+values.major> 100) {
           errors.major = "Invalid major: should not exceed 100";
         }
         return errors;
@@ -54,7 +63,7 @@ const AddVersionForm = ({initial,onSubmitHandler}) => (
         isSubmitting,
         /* and other goodies */
       }) => (
-        <form className={classes.root} onSubmit={handleSubmit}>
+        <Form className={classes.root}>
           <Grid container spacing={2}>
             <Grid item lg={6} md={6} sm={12} xs={12}>
                 <TextField
@@ -139,10 +148,11 @@ const AddVersionForm = ({initial,onSubmitHandler}) => (
             <Icon>save</Icon>
             <span className="pl-8 capitalize">Save</span>
           </Button>
-        </form>
+        </Form>
       )}
     </Formik>
-  </div>
+  </>
 );
+}
 
 export default AddVersionForm;

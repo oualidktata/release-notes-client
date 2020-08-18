@@ -65,17 +65,18 @@ mutation addVersionDetail($input:VersionDetailInput){
   addVersionDetail(input:$input)
   {
     id
-    status{
-      id
-    }
-    changeType{
-      id
-    }
-    isActive
+    shortDescription
+    longDescription
     links{
+      id
+      name
+      link
+      targetSystem{
         id
         name
+      }
     }
+    isActive
   }
 }
 `;

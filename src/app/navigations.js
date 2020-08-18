@@ -6,8 +6,19 @@ export const navigations = [
   },
   {
     name: "Versions",
-    path: "/versions/versions",
-    icon: "dashboard",
+   icon: "dashboard",
+    children: [
+      {
+        name: "Versions",
+        path: "/versions/versions",
+        iconText: "B",
+      },
+      {
+        name: "Lab",
+        path: "/versions/lab-folder/main",
+        iconText: "E",
+      },
+    ],
   },
   {
     name: "Forms",

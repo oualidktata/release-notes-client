@@ -79,5 +79,5 @@ module.exports = {
       analyzerMode: enableBundleAnalyzer === true ? 'static' : 'disabled',
       openAnalyzer: true,
     }),
-  ],
+  ]
 };
