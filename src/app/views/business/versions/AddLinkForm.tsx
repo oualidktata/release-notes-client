@@ -6,13 +6,14 @@ import TargetSystemSelect from "../selectors/TargetSystemSelect";
 
 import { TextField } from "formik-material-ui";
 
-type AddLinkInput = {
+type AddLinkViewModel = {
   id: string;
   versionDetailId: string;
   link: string;
   name: string;
   isActive:boolean;
   targetSystemId: string;
+  targetSystemName: string;
 };
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,8 +42,8 @@ const AddLinkForm = ({ initial, onSubmitHandler }) => {
     <>
       <Formik
         initialValues={initial}
-        validate={(values: AddLinkInput) => {
-          const errors: Partial<AddLinkInput> = {};
+        validate={(values: AddLinkViewModel) => {
+          const errors: Partial<AddLinkViewModel> = {};
           if (!values.name) {
             errors.name = "Required";
           }
@@ -109,8 +110,9 @@ const AddLinkForm = ({ initial, onSubmitHandler }) => {
                         {...field}
                         defaultValue={"1"}
                         onItemSelected={(e) => {
+                         form.setFieldValue("targetSystemId", e.target.value);
+                          form.setFieldValue("targetSystemName", e.target.value);
                           handleChange(e);
-                          form.setFieldValue("targetSystemId", e.target.value);
                         }}
                       />
                     )}

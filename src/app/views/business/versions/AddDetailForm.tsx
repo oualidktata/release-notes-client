@@ -14,7 +14,6 @@ import { useMutation } from "@apollo/client";
 import StatusSelect from "../selectors/StatusSelect";
 import ChangeTypeSelect from "../selectors/ChangeTypeSelect";
 import LinkList from "./LinkList";
-import LinkList2 from "./LinkList2";
 
 import AddLinkForm from "./AddLinkForm";
 import { onError } from "@apollo/client/link/error";
@@ -43,6 +42,13 @@ type LinkInput = {
   targetSystemId: String;
   isActive?: Boolean;
 };
+type LinkInputViewModel = {
+  name: String;
+  link: String;
+  targetSystemId: String;
+  targetSystemName: String;
+  isActive?: Boolean;
+};
 interface VersionDetailInput {
   versionId: string;
   shortDescription: string;
@@ -57,40 +63,29 @@ const AddDetailForm = ({ versionId }) => {
   const classes = useStyles();
 
   const initialLinkFormValues = {
-    id: "",
-    versionDetailId: "v1-0001",
+    // id: "",
+    // versionDetailId: "v1-0001",
     link: "",
     name: "",
     isActive: true,
     targetSystemId: "1",
+    targetSystemName:""
   };
   const [addVersionDetail] = useMutation(ADD_VERSION_DETAIL, {
     refetchQueries: ["versionDetailsByVersionId"],
   });
-  const emptyLinks:LinkInput[]=[]
+  const emptyLinks:LinkInputViewModel[]=[]
   const [links, setLinks] = useState(emptyLinks);
-  const onLinkAddedHandler = (values) => {
-    
-    let updatedLinks: Array<LinkInput>;
-    updatedLinks = links;
-    let newValue: LinkInput = {
+
+  const onLinkAddedHandler = (values) => {  
+    setLinks([...links,{
       name: values.name,
       link: values.link,
       isActive:values.isActive,
       targetSystemId: values.targetSystemId,
-    };
-    updatedLinks.push(newValue);
-    setLinks(updatedLinks);
-    //alert(JSON.stringify(updatedLinks))
-    console.log(values);
-
+      targetSystemName: values.targetSystemName,
+    }]);
   };
-
-  // useEffect(()=>{
-
-    
-
-  // },[links]);
   // const link = onError(({ graphQLErrors, networkError }) => {
   //   if (graphQLErrors)
   //     graphQLErrors.map(({ message, locations, path }) =>
@@ -101,50 +96,8 @@ const AddDetailForm = ({ versionId }) => {
 
   //   if (networkError) console.log(`[Network error]: ${networkError}`);
   // });
-  // const [links, setLinks] = useState([
-  //   {
-  //     id: "1",
-  //     versionDetailId: "v1-0001",
-  //     link: "  http://www.google.com",
-  //     name: "sample name",
-  //     targetSystem: {
-  //       id: "1",
-  //       name: "TFS",
-  //     },
-  //   },
-  //   {
-  //     id: "2",
-  //     versionDetailId: "v1-0001",
-  //     link: "http://www.facebook.com",
-  //     name: "45889",
-  //     targetSystem: {
-  //       id: "2",
-  //       name: "Service desk",
-  //     },
-  //   },
-  //   {
-  //     id: "3",
-  //     versionDetailId: "v1-0002",
-  //     link: "http://www.amazon.com",
-  //     name: "SD-520",
-  //     targetSystem: {
-  //       id: "1",
-  //       name: "TFS",
-  //     },
-  //   },
-  // ]);
-  // const [state, setState] = useState({
-  //   versionId: versionId,
-  //   shortDescription: "tttt",
-  //   longDescription: "ttttttttttt",
-  //   statusId: "1",
-  //   changeTypeId: "1",
-  //   isActive: true,
-  //   LinksInput: [],
-  // });
   return (
     <>
-      {/* <p>{JSON.stringify(state)}</p> */}
       <Grid
         container
         className={classes.root}
@@ -152,6 +105,7 @@ const AddDetailForm = ({ versionId }) => {
         justify="space-evenly"
         direction="row"
       >
+         <Grid container item lg={6} md={6} sm={12} xs={12} direction="row">
         <Formik
           initialValues={{
             versionId: versionId,
@@ -173,8 +127,10 @@ const AddDetailForm = ({ versionId }) => {
             return errors;
           }}
           onSubmit={(values, { setSubmitting }) => {
-            console.log(`Values AddDetailForm: ${values}`);
-            values.linksInput = links;
+            values.linksInput = links.map(x=>{
+              delete x["targetSystemName"]
+            return x;
+            });
             addVersionDetail({ variables: { input: values } });
             setSubmitting(false);
           }}
@@ -189,7 +145,15 @@ const AddDetailForm = ({ versionId }) => {
             isSubmitting,
           }) => (
             <Form>
-              <Grid container item lg={8} md={8} sm={12} xs={12} direction="row">
+                  <Grid
+                  item
+                  container
+                  lg={12}
+                  md={12}
+                  sm={12}
+                  xs={12}
+                  direction="row"
+                >
                 <FormControl fullWidth className={classes.margin}>
                   <Field
                     component={TextField}
@@ -211,15 +175,7 @@ const AddDetailForm = ({ versionId }) => {
                     multiline
                   />
                 </FormControl>
-                <Grid
-                  item
-                  container
-                  lg={12}
-                  md={12}
-                  sm={12}
-                  xs={12}
-                  direction="row"
-                >
+              
                   <Grid container item lg={6} md={6} sm={12} xs={12} direction="row">
                     <FormControl fullWidth className={classes.margin}>
                       <Field
@@ -262,7 +218,6 @@ const AddDetailForm = ({ versionId }) => {
                     </FormControl>
                   </Grid>
                 </Grid>
-              </Grid>
               {isSubmitting && <LinearProgress />}
               <Button
                 variant="contained"
@@ -275,14 +230,14 @@ const AddDetailForm = ({ versionId }) => {
             </Form>
           )}
         </Formik>
+        </Grid>
 
-        <Grid container item lg={4} md={4} sm={12} xs={12} direction="row">
+        <Grid container item lg={6} md={6} sm={12} xs={12} direction="row">
           <AddLinkForm
             initial={initialLinkFormValues}
             onSubmitHandler={onLinkAddedHandler}
           />
           <LinkList links={links} />
-          <LinkList2></LinkList2>
         </Grid>
       </Grid>
     </>
